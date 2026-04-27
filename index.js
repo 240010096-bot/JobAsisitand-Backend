@@ -13,6 +13,37 @@ app.use(express.json()); // Permite que el servidor entienda datos JSON
 const Area = require('./models/Area');
 const Trabajador = require('./models/Trabajador'); 
 const Asistencia = require('./models/Asistencia'); // <-- AGREGA ESTO
+const Supervisor = require('./models/Supervisor');
+
+
+
+//////////////////////////////////////////////////////////////////////
+app.get('/api/sync/catalogos/:rol', async (req, res) => {
+  const { rol } = req.params;
+  const { areaId } = req.query;
+  
+  try {
+    const areas = await Area.find();
+    
+    // Obtenemos AMBOS grupos
+    let trabajadores;
+    let supervisores = await Supervisor.find(); // Traemos todos los supervisores
+    
+    if (rol === 'admin') {
+      trabajadores = await Trabajador.find();
+    } else {
+      // Si no es admin, filtramos por área
+      trabajadores = await Trabajador.find({ areaId: areaId });
+      // Opcional: Filtrar supervisores si es necesario
+      supervisores = await Supervisor.find({ areaId: areaId }); 
+    }
+    
+    // RESPUESTA COMPLETA: El frontend ahora recibirá ambos
+    res.json({ trabajadores, supervisores, areas });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // ... (después de tus otras rutas, agrega esto)
 /////////////////////////////////////////////////////////////////////
@@ -57,25 +88,8 @@ app.post('/api/areas', async (req, res) => {
   }
 });
 
-// Sincronización de catálogos filtrada
-app.get('/api/sync/catalogos/:rol', async (req, res) => {
-  const { rol } = req.params;
-  const { areaId } = req.query; // Ahora el ID llega por consulta, no por parámetro
-  try {
-    const areas = await Area.find();
-    let trabajadores;
-    
-    if (rol === 'admin') {
-      trabajadores = await Trabajador.find();
-    } else {
-      trabajadores = await Trabajador.find({ areaId: areaId });
-    }
-    
-    res.json({ trabajadores, areas });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+
+
 
 // --- INICIAR SERVIDOR ---
 const PORT = process.env.PORT || 5000;
