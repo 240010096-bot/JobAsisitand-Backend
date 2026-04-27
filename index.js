@@ -11,7 +11,36 @@ app.use(express.json()); // Permite que el servidor entienda datos JSON
 
 // --- IMPORTACIÓN DE MODELOS ---
 const Area = require('./models/Area');
-const Trabajador = require('./models/Trabajador'); // Asegúrate de tener este modelo
+const Trabajador = require('./models/Trabajador'); 
+// ... (arriba de tus rutas)
+const Area = require('./models/Area');
+const Trabajador = require('./models/Trabajador');
+const Asistencia = require('./models/Asistencia'); // <-- AGREGA ESTO
+
+// ... (después de tus otras rutas, agrega esto)
+/////////////////////////////////////////////////////////////////////
+// Guardar Asistencia (Recibe los datos del frontend)
+app.post('/api/asistencias', async (req, res) => {
+  try {
+    // Extraemos los datos del cuerpo de la petición
+    const { trabajadorId, supervisorId, fecha, lat, lng } = req.body;
+
+    // Creamos la instancia, transformando lat/lng al formato del Schema
+    const nuevaAsistencia = new Asistencia({
+      trabajadorId,
+      supervisorId,
+      fecha: fecha || new Date(),
+      ubicacion: { lat, lng },
+      offline: true // Marcamos que fue una sincronización posterior
+    });
+
+    await nuevaAsistencia.save();
+    res.status(201).json({ message: "Asistencia guardada correctamente" });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});// Asegúrate de tener este modelo
+///////////////////////////////////////////////////////////////////////////
 
 // --- CONEXIÓN A MONGODB ---
 mongoose.connect(process.env.MONGO_URI)
