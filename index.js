@@ -45,6 +45,9 @@ app.get('/api/sync/catalogos/:rol', async (req, res) => {
   }
 });
 
+//////////////////////////////////////////////////////////////////
+
+
 // ... (después de tus otras rutas, agrega esto)
 /////////////////////////////////////////////////////////////////////
 // Guardar Asistencia (Recibe los datos del frontend)
@@ -69,6 +72,35 @@ app.post('/api/asistencias', async (req, res) => {
   }
 });// Asegúrate de tener este modelo
 ///////////////////////////////////////////////////////////////////////////
+
+
+
+
+// Ruta para registrar un nuevo supervisor
+app.post('/api/supervisores', async (req, res) => {
+  try {
+    const { nombre, apellido, email, password, rol } = req.body;
+    
+    const nuevoSupervisor = new Supervisor({
+      nombre,
+      apellido,
+      email,
+      password, // OJO: Usa bcrypt para encriptar esto en producción
+      rol
+    });
+
+    await nuevoSupervisor.save();
+    res.status(201).json({ message: "Supervisor creado exitosamente", nuevoSupervisor });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+
+
+
+
+
 
 // --- CONEXIÓN A MONGODB ---
 mongoose.connect(process.env.MONGO_URI)
