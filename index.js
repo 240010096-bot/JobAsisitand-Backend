@@ -102,6 +102,10 @@ app.post('/api/supervisores', async (req, res) => {
 
 
 
+
+
+
+
 // --- CONEXIÓN A MONGODB ---
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Conectado a MongoDB Atlas exitosamente'))
