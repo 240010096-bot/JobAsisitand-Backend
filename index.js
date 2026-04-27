@@ -58,7 +58,7 @@ app.post('/api/areas', async (req, res) => {
 });
 
 // Sincronización de catálogos filtrada
-pp.get('/api/sync/catalogos/:rol', async (req, res) => {
+app.get('/api/sync/catalogos/:rol', async (req, res) => {
   const { rol } = req.params;
   const { areaId } = req.query; // Ahora el ID llega por consulta, no por parámetro
   try {
