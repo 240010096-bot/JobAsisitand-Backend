@@ -1,4 +1,24 @@
+const express = require('express');
+const cors = require('cors'); // Necesario para permitir peticiones desde Vercel
+const mongoose = require('mongoose'); // Necesario para la base de datos
+require('dotenv').config(); // Para manejar tu conexión de forma segura
+
+const app = express();
+
+// --- CONFIGURACIÓN DE MIDDLEWARE (Lo que te faltaba) ---
+app.use(cors()); // Permite peticiones desde cualquier origen (tu frontend)
+app.use(express.json()); // Permite que el servidor entienda datos JSON
+
+// --- IMPORTACIÓN DE MODELOS ---
 const Area = require('./models/Area');
+const Trabajador = require('./models/Trabajador'); // Asegúrate de tener este modelo
+
+// --- CONEXIÓN A MONGODB ---
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('Conectado a MongoDB Atlas exitosamente'))
+  .catch(err => console.error('Error conectando a MongoDB:', err));
+
+// --- TUS RUTAS (Mantenidas sin cambios) ---
 
 // Crear Área (Solo Admin)
 app.post('/api/areas', async (req, res) => {
@@ -28,4 +48,10 @@ app.get('/api/sync/catalogos/:rol/:areaId?', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+// --- INICIAR SERVIDOR ---
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Servidor ejecutándose en el puerto ${PORT}`);
 });
