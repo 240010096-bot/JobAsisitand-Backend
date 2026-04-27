@@ -12,9 +12,6 @@ app.use(express.json()); // Permite que el servidor entienda datos JSON
 // --- IMPORTACIÓN DE MODELOS ---
 const Area = require('./models/Area');
 const Trabajador = require('./models/Trabajador'); 
-// ... (arriba de tus rutas)
-const Area = require('./models/Area');
-const Trabajador = require('./models/Trabajador');
 const Asistencia = require('./models/Asistencia'); // <-- AGREGA ESTO
 
 // ... (después de tus otras rutas, agrega esto)
