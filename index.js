@@ -137,7 +137,19 @@ app.post('/api/login', async (req, res) => {
 });
 
 
-
+// En tu archivo index.js (backend)
+app.post('/api/register', async (req, res) => {
+    console.log("Datos recibidos en backend:", req.body); // <--- DEBUG AQUÍ
+    
+    try {
+        const nuevoUsuario = new Supervisor(req.body);
+        await nuevoUsuario.save();
+        res.status(201).json({ message: "Usuario guardado" });
+    } catch (error) {
+        console.error("Error al guardar en MongoDB:", error); // <--- MIRA ESTO
+        res.status(500).json({ error: error.message });
+    }
+});
 
 // --- CONEXIÓN A MONGODB ---
 mongoose.connect(process.env.MONGO_URI)
