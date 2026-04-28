@@ -14,6 +14,7 @@ const Area = require('./models/Area');
 const Trabajador = require('./models/Trabajador'); 
 const Asistencia = require('./models/Asistencia'); // <-- AGREGA ESTO
 const Supervisor = require('./models/Supervisor');
+const SupervisorArea = require('./models/SupervisorArea'); // <--- AGREGA ESTO
 
 
 
@@ -149,6 +150,31 @@ app.post('/api/register', async (req, res) => {
         console.error("Error al guardar en MongoDB:", error); // <--- MIRA ESTO
         res.status(500).json({ error: error.message });
     }
+});
+
+
+
+// --- RUTA PARA GUARDAR LA RELACIÓN SUPERVISOR-ÁREA ---
+app.post('/api/relaciones', async (req, res) => {
+  try {
+    const { supervisorId, areaId } = req.body;
+
+    // Validación básica
+    if (!supervisorId || !areaId) {
+      return res.status(400).json({ error: "supervisorId y areaId son requeridos" });
+    }
+
+    const nuevaRelacion = new SupervisorArea({
+      supervisorId,
+      areaId
+    });
+
+    await nuevaRelacion.save();
+    res.status(201).json({ message: "Relación guardada", nuevaRelacion });
+  } catch (error) {
+    console.error("Error al guardar relación:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // --- CONEXIÓN A MONGODB ---
