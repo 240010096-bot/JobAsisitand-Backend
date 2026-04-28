@@ -99,7 +99,19 @@ app.post('/api/supervisores', async (req, res) => {
 
 
 
+///////////////////////////////////////////////////////////////////////////
 
+
+// Agrega esto en tu index.js (Backend)
+app.post('/api/trabajadores', async (req, res) => {
+  try {
+    const nuevoTrabajador = new Trabajador(req.body);
+    await nuevoTrabajador.save();
+    res.status(201).json(nuevoTrabajador);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
 
 
 
