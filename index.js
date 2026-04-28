@@ -114,6 +114,27 @@ app.post('/api/trabajadores', async (req, res) => {
 });
 
 
+//////////////////////////////////////////////////////
+
+
+// Ruta para verificar credenciales (Login)
+app.post('/api/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    
+    // Buscamos al usuario en MongoDB
+    const usuario = await Supervisor.findOne({ email, password });
+    
+    if (!usuario) {
+      return res.status(401).json({ error: "Credenciales incorrectas" });
+    }
+    
+    // Si existe, devolvemos los datos
+    res.json({ message: "Login exitoso", usuario });
+  } catch (error) {
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+});
 
 
 
